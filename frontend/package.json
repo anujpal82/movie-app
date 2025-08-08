@@ -4,10 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "doppler run --project movie-app --config prd -- vite",
+    "start": "npm run dev",
+    "build": "doppler run --project movie-app --config prd -- vite build",
+    "build:local": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview:local": "vite preview",
+    "doppler:setup": "doppler setup",
+    "doppler:secrets:download": "doppler secrets download --no-file --format=env",
+    "doppler:secrets:upload": "doppler secrets upload"
   },
   "dependencies": {
     "i18next": "^25.3.2",

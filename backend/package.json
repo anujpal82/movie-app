@@ -8,16 +8,23 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start": "doppler run --project movie-app --config prd -- nest start",
+    "start:dev": "doppler run --project movie-app-backend --config dev -- nest start --watch",
+    "start:debug": "doppler run --project movie-app-backend --config dev -- nest start --debug --watch",
+    "start:staging": "doppler run --project movie-app-backend --config staging -- node dist/main",
+    "start:prod": "doppler run --project movie-app-backend --config prod -- node dist/main",
+    "start:dev:local": "nest start --watch",
+    "start:debug:local": "nest start --debug --watch",
+    "start:prod:local": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "doppler:setup": "doppler setup",
+    "doppler:secrets:download": "doppler secrets download --no-file --format=env",
+    "doppler:secrets:upload": "doppler secrets upload"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",
