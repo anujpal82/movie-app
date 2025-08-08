@@ -9,7 +9,7 @@ A full-stack web application for managing personal movie collections. Built with
 
 ### Live Application
 - **Login URL**: [http://56.228.5.205](http://56.228.5.205)
-- **Swagger UI Documentation**: [http://56.228.5.205/docs](http://56.228.5.205/docs)
+- **Swagger UI Documentation**: [http://56.228.5.205/api/docs](http://56.228.5.205/api/docs)
 
 ### Test Credentials
 ```
@@ -128,8 +128,8 @@ movie-app/
 ## 📚 API Documentation
 
 The API is fully documented with Swagger UI. You can access the interactive documentation at:
-- **Local**: http://localhost:3001/docs
-- **Production**: [http://56.228.5.205/docs](http://56.228.5.205/docs)
+- **Local**: http://localhost:3001/api/docs
+- **Production**: [http://56.228.5.205/api/docs](http://56.228.5.205/api/docs)
 
 ### Key API Endpoints
 
