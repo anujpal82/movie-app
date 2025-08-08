@@ -1,0 +1,71 @@
+{
+  "signin": {
+    "title": "Willkommen zurück",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "login": "Anmelden",
+    "signing_in": "Anmeldung läuft...",
+    "remember_me": "Angemeldet bleiben",
+    "dontHaveAccount": "Noch kein Konto?",
+    "signUp": "Registrieren"
+  },
+  "signup": {
+    "title": "Konto erstellen",
+    "name": "Vollständiger Name",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "register": "Konto erstellen",
+    "creating": "Konto wird erstellt...",
+    "alreadyHaveAccount": "Bereits ein Konto?",
+    "signIn": "Anmelden"
+  },
+  "movielist": {
+    "my_movies": "Meine Filme",
+    "add_movie": "Film hinzufügen",
+    "empty_title": "Noch keine Filme",
+    "add_new": "Fügen Sie Ihren ersten Film hinzu",
+    "delete_confirm": "Sind Sie sicher, dass Sie diesen Film löschen möchten?",
+    "show_per_page": "Anzeigen pro Seite"
+  },
+  "movieform": {
+    "create_movie": "Neuen Film erstellen",
+    "edit_movie": "Film bearbeiten",
+    "title": "Filmtitel",
+    "publishing_year": "Erscheinungsjahr",
+    "image_url": "Filmplakat",
+    "drop_image": "Bild hierher ziehen und ablegen",
+    "click_browse": "oder klicken, um zu durchsuchen",
+    "enter_image_url": "Bild-URL eingeben",
+    "enter_movie_title": "Filmtitel eingeben",
+    "enter_publishing_year": "Erscheinungsjahr eingeben",
+    "title_required": "Titel ist erforderlich",
+    "publish_date_required": "Erscheinungsjahr ist erforderlich",
+    "image_required": "Bild ist erforderlich",
+    "submit": "Film erstellen",
+    "update": "Film aktualisieren",
+    "cancel": "Abbrechen",
+    "saving": "Speichern..."
+  },
+  "common": {
+    "logout": "Abmelden"
+  },
+  "validation": {
+    "email_required": "E-Mail ist erforderlich",
+    "email_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "email_max": "E-Mail muss weniger als {{max}} Zeichen enthalten",
+    "password_required": "Passwort ist erforderlich",
+    "password_min": "Passwort muss mindestens {{min}} Zeichen lang sein",
+    "password_max": "Passwort muss weniger als {{max}} Zeichen enthalten",
+    "password_uppercase": "Passwort muss mindestens einen Großbuchstaben enthalten",
+    "password_lowercase": "Passwort muss mindestens einen Kleinbuchstaben enthalten",
+    "password_number": "Passwort muss mindestens eine Zahl enthalten",
+    "name_required": "Name ist erforderlich",
+    "name_min": "Name muss mindestens {{min}} Zeichen lang sein",
+    "name_max": "Name muss weniger als {{max}} Zeichen enthalten",
+    "name_charset": "Name darf nur Buchstaben, Leerzeichen, Bindestriche und Apostrophe enthalten",
+    "name_spaces": "Name darf keine aufeinanderfolgenden Leerzeichen enthalten",
+    "confirm_required": "Bitte bestätigen Sie Ihr Passwort",
+    "confirm_mismatch": "Passwörter stimmen nicht überein"
+  }
+}

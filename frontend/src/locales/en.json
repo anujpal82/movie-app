@@ -1,0 +1,71 @@
+{
+  "signin": {
+    "title": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "login": "Sign In",
+    "signing_in": "Signing in...",
+    "remember_me": "Remember me",
+    "dontHaveAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+  "signup": {
+    "title": "Create Account",
+    "name": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "register": "Create Account",
+    "creating": "Creating account...",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in"
+  },
+  "movielist": {
+    "my_movies": "My Movies",
+    "add_movie": "Add Movie",
+    "empty_title": "Your movie list is empty",
+    "add_new": "Add your first movie",
+    "delete_confirm": "Are you sure you want to delete this movie?",
+    "show_per_page": "Show per page"
+  },
+  "movieform": {
+    "create_movie": "Create New Movie",
+    "edit_movie": "Edit Movie",
+    "title": "Movie Title",
+    "publishing_year": "Publishing Year",
+    "image_url": "Movie Poster",
+    "drop_image": "Drag and drop image here",
+    "click_browse": "or click to browse",
+    "enter_image_url": "Enter image URL",
+    "enter_movie_title": "Enter movie title",
+    "enter_publishing_year": "Enter publishing year",
+    "title_required": "Title is required",
+    "publish_date_required": "Publishing year is required",
+    "image_required": "Image is required",
+    "submit": "Create Movie",
+    "update": "Update Movie",
+    "cancel": "Cancel",
+    "saving": "Saving..."
+  },
+  "common": {
+    "logout": "Logout"
+  },
+  "validation": {
+    "email_required": "Email is required",
+    "email_invalid": "Please enter a valid email address",
+    "email_max": "Email must be less than {{max}} characters",
+    "password_required": "Password is required",
+    "password_min": "Password must be at least {{min}} characters long",
+    "password_max": "Password must be less than {{max}} characters",
+    "password_uppercase": "Password must contain at least one uppercase letter",
+    "password_lowercase": "Password must contain at least one lowercase letter",
+    "password_number": "Password must contain at least one number",
+    "name_required": "Name is required",
+    "name_min": "Name must be at least {{min}} characters long",
+    "name_max": "Name must be less than {{max}} characters",
+    "name_charset": "Name can only contain letters, spaces, hyphens, and apostrophes",
+    "name_spaces": "Name cannot contain consecutive spaces",
+    "confirm_required": "Please confirm your password",
+    "confirm_mismatch": "Passwords do not match"
+  }
+}
