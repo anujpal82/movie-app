@@ -90,7 +90,7 @@ class MovieService {
     pageSize: number = 8
   ): Promise<PaginatedResponse<Movie>> {
     try {
-      const headers = await this.getAuthHeaders();
+      const headers = await this.getAuthHeaders();   
       const response = await fetch(
         `${apiService["baseURL"]}/movies?page=${page}&pageSize=${pageSize}`,
         {
@@ -235,7 +235,7 @@ class MovieService {
       const headers = await this.getAuthHeaders();
       const formData = await this.createFormData(movieData);
 
-      const response = await fetch(`${apiService["baseURL"]}/movies`, {
+        const response = await fetch(`${apiService["baseURL"]}/movies`, {
         method: "POST",
         headers: {
           ...headers,
