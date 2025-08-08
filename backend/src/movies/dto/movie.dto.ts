@@ -90,17 +90,26 @@ export class PaginationQueryDto {
 }
 
 export class MovieResponseDto {
-  @ApiProperty()
+  @ApiProperty({ example: "64fd8a1b2c3d4e5f6a7b8c9d" })
   id: string;
-  @ApiProperty()
+
+  @ApiProperty({ example: "Interstellar" })
   title: string;
-  @ApiProperty()
+
+  @ApiProperty({ example: 2014 })
   publishingYear: number;
-  @ApiProperty({ description: "Signed poster URL" })
+
+  @ApiProperty({
+    example:
+      "https://your-bucket.s3.amazonaws.com/posters/1234567890-interstellar.jpg",
+    description: "Signed poster URL",
+  })
   poster: string; // S3 bucket URL
-  @ApiProperty()
+
+  @ApiProperty({ example: "2024-01-15T10:30:00.000Z" })
   createdAt: Date;
-  @ApiProperty()
+
+  @ApiProperty({ example: "2024-01-15T10:30:00.000Z" })
   updatedAt: Date;
 }
 
@@ -131,4 +140,106 @@ export class PaginatedMoviesResponseDto {
     total?: number;
     pageSize?: number;
   };
+}
+
+export class ErrorResponseDto {
+  @ApiProperty({ example: 400 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Bad Request" })
+  message: string;
+
+  @ApiProperty({ example: "Validation failed" })
+  error: string;
+}
+
+export class ValidationErrorResponseDto {
+  @ApiProperty({ example: 400 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Bad Request" })
+  message: string;
+
+  @ApiProperty({ example: "Validation failed" })
+  error: string;
+
+  @ApiProperty({
+    example: [
+      {
+        field: "title",
+        message: "title should not be empty",
+      },
+      {
+        field: "publishingYear",
+        message: "publishingYear must be a number",
+      },
+    ],
+  })
+  errors: Array<{
+    field: string;
+    message: string;
+  }>;
+}
+
+export class UnauthorizedResponseDto {
+  @ApiProperty({ example: 401 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Unauthorized" })
+  message: string;
+
+  @ApiProperty({ example: "Unauthorized" })
+  error: string;
+}
+
+export class ForbiddenResponseDto {
+  @ApiProperty({ example: 403 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Forbidden" })
+  message: string;
+
+  @ApiProperty({ example: "Forbidden" })
+  error: string;
+}
+
+export class NotFoundResponseDto {
+  @ApiProperty({ example: 404 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Movie not found" })
+  message: string;
+
+  @ApiProperty({ example: "Not Found" })
+  error: string;
+}
+
+export class ConflictResponseDto {
+  @ApiProperty({ example: 409 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Movie with this title already exists" })
+  message: string;
+
+  @ApiProperty({ example: "Conflict" })
+  error: string;
+}
+
+export class InternalServerErrorResponseDto {
+  @ApiProperty({ example: 500 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Internal server error" })
+  message: string;
+
+  @ApiProperty({ example: "Internal Server Error" })
+  error: string;
+}
+
+export class DeleteResponseDto {
+  @ApiProperty({ example: 200 })
+  statusCode: number;
+
+  @ApiProperty({ example: "Movie deleted successfully" })
+  message: string;
 }

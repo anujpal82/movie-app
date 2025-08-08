@@ -10,6 +10,7 @@ import { authService } from "../services/authService";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { ApiError } from "../services/apiService";
+import { validateMovieForm, validateMovieFieldOnBlur } from "../utils/validation";
 
 const MovieForm: React.FC = () => {
   const { t } = useTranslation();
@@ -63,7 +64,13 @@ const MovieForm: React.FC = () => {
         const result = e.target?.result as string;
         setImagePreview(result);
         setImageUrl("");
-        setErrors((prev) => ({ ...prev, image: "" }));
+        // Validate the file immediately
+        const fileError = validateMovieFieldOnBlur("imageFile", "", file);
+        setErrors((prev) => ({ 
+          ...prev, 
+          image: fileError || "",
+          imageFile: fileError || ""
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -101,9 +108,20 @@ const MovieForm: React.FC = () => {
     if (url) {
       setImagePreview(url);
       setImageFile(null);
-      setErrors((prev) => ({ ...prev, image: "" }));
+      // Validate URL immediately
+      const urlError = validateMovieFieldOnBlur("imageUrl", url);
+      setErrors((prev) => ({ 
+        ...prev, 
+        image: urlError || "",
+        imageUrl: urlError || ""
+      }));
     } else {
       setImagePreview("");
+      setErrors((prev) => ({ 
+        ...prev, 
+        image: "",
+        imageUrl: ""
+      }));
     }
   };
 
@@ -115,25 +133,28 @@ const MovieForm: React.FC = () => {
     setErrors((prev) => {
       const newErrors = { ...prev };
       delete newErrors.image;
+      delete newErrors.imageFile;
+      delete newErrors.imageUrl;
       return newErrors;
     });
   };
 
+  const handleFieldBlur = (field: string, value: string) => {
+    const error = validateMovieFieldOnBlur(field, value, imageFile);
+    setErrors(prev => ({
+      ...prev,
+      [field]: error || ""
+    }));
+  };
+
   const validateForm = () => {
+    const validationErrors = validateMovieForm(title, publishDate, imageFile, imageUrl);
     const newErrors: { [key: string]: string } = {};
-
-    if (!title.trim()) {
-      newErrors.title = t("movieform.title_required");
-    }
-
-    if (!String(publishDate).trim()) {
-      newErrors.publishDate = t("movieform.publish_date_required");
-    }
-
-    if (!imagePreview && !imageUrl) {
-      newErrors.image = t("movieform.image_required");
-    }
-
+    
+    validationErrors.forEach(error => {
+      newErrors[error.field] = error.message;
+    });
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -353,10 +374,14 @@ const MovieForm: React.FC = () => {
               placeholder={t("movieform.enter_image_url")}
               value={imageUrl}
               onChange={handleImageUrlChange}
+              onBlur={(e) => handleFieldBlur("imageUrl", e.target.value)}
               className={`w-full px-4 py-3 bg-input/50 border rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
-                errors.image ? "border-error" : "border-input"
+                errors.imageUrl ? "border-error" : "border-input"
               }`}
             />
+            {errors.imageUrl && (
+              <p className="text-error text-sm">{errors.imageUrl}</p>
+            )}
           </div>
 
           {/* Form Fields */}
@@ -369,6 +394,7 @@ const MovieForm: React.FC = () => {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                onBlur={(e) => handleFieldBlur("title", e.target.value)}
                 className={`w-full px-4 py-3 bg-input/50 border rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
                   errors.title ? "border-error" : "border-input"
                 }`}
@@ -388,14 +414,15 @@ const MovieForm: React.FC = () => {
                 type="text"
                 value={publishDate}
                 onChange={(e) => setPublishDate(e.target.value)}
+                onBlur={(e) => handleFieldBlur("publishingYear", e.target.value)}
                 className={`w-full px-4 py-3 bg-input/50 border rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all ${
-                  errors.publishDate ? "border-error" : "border-input"
+                  errors.publishingYear ? "border-error" : "border-input"
                 }`}
                 placeholder={t("movieform.enter_publishing_year")}
                 required
               />
-              {errors.publishDate && (
-                <p className="text-error text-sm mt-1">{errors.publishDate}</p>
+              {errors.publishingYear && (
+                <p className="text-error text-sm mt-1">{errors.publishingYear}</p>
               )}
             </div>
 

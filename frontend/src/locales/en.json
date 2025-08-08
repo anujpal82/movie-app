@@ -66,6 +66,23 @@
     "name_charset": "Name can only contain letters, spaces, hyphens, and apostrophes",
     "name_spaces": "Name cannot contain consecutive spaces",
     "confirm_required": "Please confirm your password",
-    "confirm_mismatch": "Passwords do not match"
+    "confirm_mismatch": "Passwords do not match",
+    "title_required": "Movie title is required",
+    "title_min": "Title must be at least {{min}} characters long",
+    "title_max": "Title must be less than {{max}} characters",
+    "title_spaces": "Title cannot contain excessive spaces",
+    "title_charset": "Title contains invalid characters",
+    "year_required": "Publishing year is required",
+    "year_numeric": "Publishing year must be a valid number",
+    "year_min": "Publishing year must be at least {{min}}",
+    "year_max": "Publishing year cannot be later than {{max}}",
+    "image_required": "Please provide either an image file or URL",
+    "image_url_invalid": "Please enter a valid image URL",
+    "image_url_protocol": "Image URL must use HTTP or HTTPS protocol",
+    "image_url_extension": "Image URL must end with a valid image extension",
+    "image_url_max": "Image URL must be less than {{max}} characters",
+    "image_size_max": "Image file size must be less than {{max}}",
+    "image_type": "Please select a valid image file",
+    "image_format": "Please select a supported image format (JPEG, PNG, GIF, WebP)"
   }
 }

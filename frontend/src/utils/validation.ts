@@ -164,3 +164,160 @@ export const getFieldError = (errors: ValidationError[], field: string): string 
   const error = errors.find(err => err.field === field);
   return error ? error.message : null;
 };
+
+// Movie validation functions
+export const validateMovieTitle = (title: string): string | null => {
+  if (!title.trim()) {
+    return i18n.t('validation.title_required');
+  }
+  
+  if (title.trim().length < 2) {
+    return i18n.t('validation.title_min', { min: 2 });
+  }
+  
+  if (title.length > 200) {
+    return i18n.t('validation.title_max', { max: 200 });
+  }
+  
+  // Check for excessive whitespace
+  if (/\s{3,}/.test(title)) {
+    return i18n.t('validation.title_spaces');
+  }
+  
+  // Check for invalid characters (allow letters, numbers, spaces, hyphens, apostrophes, and common punctuation)
+  if (!/^[a-zA-Z0-9\s\-'.,!?&()]+$/.test(title)) {
+    return i18n.t('validation.title_charset');
+  }
+  
+  return null;
+};
+
+export const validatePublishingYear = (year: string): string | null => {
+  if (!year.trim()) {
+    return i18n.t('validation.year_required');
+  }
+  
+  const yearNum = parseInt(year, 10);
+  
+  if (isNaN(yearNum)) {
+    return i18n.t('validation.year_numeric');
+  }
+  
+  if (yearNum < 1888) {
+    return i18n.t('validation.year_min', { min: 1888 });
+  }
+  
+  if (yearNum > new Date().getFullYear() + 1) {
+    return i18n.t('validation.year_max', { max: new Date().getFullYear() + 1 });
+  }
+  
+  return null;
+};
+
+export const validateImageUrl = (url: string): string | null => {
+  if (!url.trim()) {
+    return null; // URL is optional if file is uploaded
+  }
+  
+  try {
+    const urlObj = new URL(url);
+    if (!['http:', 'https:'].includes(urlObj.protocol)) {
+      return i18n.t('validation.image_url_protocol');
+    }
+  } catch {
+    return i18n.t('validation.image_url_invalid');
+  }
+  
+  // Check for common image file extensions
+  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i;
+  if (!imageExtensions.test(url)) {
+    return i18n.t('validation.image_url_extension');
+  }
+  
+  if (url.length > 500) {
+    return i18n.t('validation.image_url_max', { max: 500 });
+  }
+  
+  return null;
+};
+
+export const validateImageFile = (file: File | null): string | null => {
+  if (!file) {
+    return null; // File is optional if URL is provided
+  }
+  
+  // Check file size (max 5MB)
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  if (file.size > maxSize) {
+    return i18n.t('validation.image_size_max', { max: '5MB' });
+  }
+  
+  // Check file type
+  if (!file.type.startsWith('image/')) {
+    return i18n.t('validation.image_type');
+  }
+  
+  // Check for specific image formats
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedTypes.includes(file.type)) {
+    return i18n.t('validation.image_format');
+  }
+  
+  return null;
+};
+
+export const validateMovieForm = (
+  title: string,
+  publishingYear: string,
+  imageFile: File | null,
+  imageUrl: string
+): ValidationError[] => {
+  const errors: ValidationError[] = [];
+
+  const titleError = validateMovieTitle(title);
+  if (titleError) {
+    errors.push({ field: 'title', message: titleError });
+  }
+
+  const yearError = validatePublishingYear(publishingYear);
+  if (yearError) {
+    errors.push({ field: 'publishingYear', message: yearError });
+  }
+
+  // Validate image (either file or URL must be provided)
+  if (!imageFile && !imageUrl.trim()) {
+    errors.push({ field: 'image', message: i18n.t('validation.image_required') });
+  } else {
+    const imageUrlError = validateImageUrl(imageUrl);
+    if (imageUrlError) {
+      errors.push({ field: 'imageUrl', message: imageUrlError });
+    }
+
+    const imageFileError = validateImageFile(imageFile);
+    if (imageFileError) {
+      errors.push({ field: 'imageFile', message: imageFileError });
+    }
+  }
+
+  return errors;
+};
+
+// Real-time validation for movie form fields
+export const validateMovieFieldOnBlur = (
+  field: string,
+  value: string,
+  imageFile?: File | null
+): string | null => {
+  switch (field) {
+    case 'title':
+      return validateMovieTitle(value);
+    case 'publishingYear':
+      return validatePublishingYear(value);
+    case 'imageUrl':
+      return validateImageUrl(value);
+    case 'imageFile':
+      return validateImageFile(imageFile || null);
+    default:
+      return null;
+  }
+};
