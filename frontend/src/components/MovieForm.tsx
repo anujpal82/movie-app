@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Upload, X, LogOut } from "lucide-react";
+import { ArrowLeft, Upload, X, LogOut, Menu, X as CloseIcon } from "lucide-react";
 import {
   movieService,
   CreateMovieRequest,
@@ -23,6 +23,7 @@ const MovieForm: React.FC = () => {
   const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = Boolean(id);
@@ -286,34 +287,69 @@ const MovieForm: React.FC = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-card/50 border-b border-input">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4 flex-1">
+            {/* Left side - Back button and title */}
+            <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
                 onClick={() => navigate("/movies")}
                 className="p-2 text-slate-400 hover:text-white transition-colors flex-shrink-0"
               >
-                <ArrowLeft className="w-6 h-6" />
+                <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <h1 className="text-3xl font-bold text-white flex-shrink-0">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate">
                 {isEditing
                   ? t("movieform.edit_movie")
                   : t("movieform.create_movie")}
               </h1>
             </div>
 
+            {/* Right side - Language switcher and logout */}
             <div className="flex items-center gap-2 flex-shrink-0">
-              <LanguageSwitcher />
-              <div className="w-px h-6 bg-input"></div>
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center gap-2 bg-error/20 hover:bg-error/30 text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                <span className="text-white">{t("common.logout")}</span>
-                <LogOut className="w-4 h-4" />
-              </button>
+              {/* Desktop menu */}
+              <div className="hidden sm:flex items-center gap-2">
+                <LanguageSwitcher />
+                <div className="w-px h-6 bg-input"></div>
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center gap-2 bg-error/20 hover:bg-error/30 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  <span className="text-white">{t("common.logout")}</span>
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Mobile hamburger menu */}
+              <div className="sm:hidden">
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2 text-slate-400 hover:text-white transition-colors"
+                >
+                  {isMobileMenuOpen ? (
+                    <CloseIcon className="w-6 h-6" />
+                  ) : (
+                    <Menu className="w-6 h-6" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Mobile menu dropdown */}
+          {isMobileMenuOpen && (
+            <div className="sm:hidden mt-4 bg-card/80 backdrop-blur-sm border border-input rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <LanguageSwitcher />
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center gap-2 bg-error/20 hover:bg-error/30 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  <span className="text-white">{t("common.logout")}</span>
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -321,7 +357,7 @@ const MovieForm: React.FC = () => {
       <div className="max-w-4xl mx-auto p-6">
         <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-8">
           {/* Image Upload Area */}
-          <div className="space-y-4">
+          <div className="space-y-4 order-2 md:order-1">
             <div
               className={`aspect-[3/4] border-2 border-dashed rounded-lg p-8 flex items-center justify-center relative transition-colors ${
                 dragActive ? "border-primary bg-primary/10" : ""
@@ -347,7 +383,20 @@ const MovieForm: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <label className="text-center cursor-pointer w-full h-full flex flex-col items-center justify-center">
+                <label 
+                  className="text-center cursor-pointer w-full h-full flex flex-col items-center justify-center"
+                  onClick={(e) => {
+                    // Only trigger file input if clicking directly on the label area
+                    if (e.target === e.currentTarget || e.target === e.currentTarget.querySelector('p') || e.target === e.currentTarget.querySelector('svg')) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const fileInput = e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement;
+                      if (fileInput) {
+                        fileInput.click();
+                      }
+                    }
+                  }}
+                >
                   <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                   <p className="text-slate-400 mb-2">
                     {t("movieform.drop_image")}
@@ -385,7 +434,7 @@ const MovieForm: React.FC = () => {
           </div>
 
           {/* Form Fields */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 md:order-2">
             <div>
               <label className="block text-white font-semibold mb-3">
                 {t("movieform.title")}
@@ -425,29 +474,29 @@ const MovieForm: React.FC = () => {
                 <p className="text-error text-sm mt-1">{errors.publishingYear}</p>
               )}
             </div>
+          </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-4 pt-8">
-              <button
-                type="button"
-                onClick={() => navigate("/movies")}
-                className="flex-1 bg-card hover:bg-card/80 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                {t("movieform.cancel")}
-              </button>
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-8 order-3">
+            <button
+              type="button"
+              onClick={() => navigate("/movies")}
+              className="flex-1 bg-card hover:bg-card/80 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            >
+              {t("movieform.cancel")}
+            </button>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 bg-primary hover:bg-primary/80 disabled:bg-primary/60 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                {loading
-                  ? t("movieform.saving")
-                  : isEditing
-                  ? t("movieform.update")
-                  : t("movieform.submit")}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-primary hover:bg-primary/80 disabled:bg-primary/60 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            >
+              {loading
+                ? t("movieform.saving")
+                : isEditing
+                ? t("movieform.update")
+                : t("movieform.submit")}
+            </button>
           </div>
         </form>
       </div>

@@ -41,7 +41,11 @@ const LanguageSwitcher: React.FC = () => {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
         className="inline-flex items-center gap-1 sm:gap-2 bg-primary/20 hover:bg-primary/30 text-white px-2 sm:px-4 py-2 rounded-lg transition-colors"
       >
         <Globe className="w-4 h-4" />
@@ -56,11 +60,15 @@ const LanguageSwitcher: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-1.5 bg-card/95 backdrop-blur-sm border border-input rounded-md shadow-lg min-w-[130px] overflow-hidden z-50">
+        <div className="absolute top-full right-0 sm:right-0 left-0 sm:left-auto mt-1.5 bg-card/95 backdrop-blur-sm border border-input rounded-md shadow-lg min-w-[130px] overflow-hidden z-50">
           {languages.map((lang) => (
             <button
               key={lang.code}
-              onClick={() => changeLanguage(lang.code)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                changeLanguage(lang.code);
+              }}
               className={`
                 w-full px-3.5 py-2.5 text-left flex items-center gap-2.5 hover:bg-input/50 transition-colors duration-200
                 ${
