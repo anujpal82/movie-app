@@ -227,12 +227,7 @@ export const validateImageUrl = (url: string): string | null => {
   } catch {
     return i18n.t('validation.image_url_invalid');
   }
-  
-  // Check for common image file extensions
-  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i;
-  if (!imageExtensions.test(url)) {
-    return i18n.t('validation.image_url_extension');
-  }
+  // Many CDNs and signed URLs omit file extensions; accept valid http(s) URLs without enforcing extension
   
   if (url.length > 500) {
     return i18n.t('validation.image_url_max', { max: 500 });
