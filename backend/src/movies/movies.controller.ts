@@ -19,7 +19,6 @@ import {
   MovieResponseDto,
   PaginationQueryDto,
   PaginatedMoviesResponseDto,
-  ErrorResponseDto,
   ValidationErrorResponseDto,
   UnauthorizedResponseDto,
   ForbiddenResponseDto,
@@ -140,9 +139,10 @@ export class MoviesController {
     @Body() createMovieDto: CreateMovieDto,
     @UploadedFile() file: Express.Multer.File & { location?: string }
   ): Promise<MovieResponseDto> {
+    // Accept either uploaded file location or a provided URL in body
     return this.moviesService.create({
       ...createMovieDto,
-      poster: file?.location,
+      poster: file?.location ?? createMovieDto.poster,
     });
   }
   @Get()
@@ -314,14 +314,18 @@ export class MoviesController {
   ): Promise<MovieResponseDto> {
     const updateData: Record<string, unknown> = {};
 
+    // Copy all updatable fields except poster (we'll handle it explicitly)
     for (const [key, value] of Object.entries(updateMovieDto)) {
-      if (value !== undefined) {
+      if (value !== undefined && key !== "poster") {
         updateData[key] = value as unknown;
       }
     }
 
-    if (file?.location) {
-      updateData.poster = file.location;
+    // Determine new poster from either uploaded file or a provided URL
+    const newPoster: string | undefined =
+      file?.location ?? updateMovieDto.poster;
+    if (typeof newPoster === "string") {
+      updateData.poster = newPoster;
     }
 
     return this.moviesService.update(id, updateData);

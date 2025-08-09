@@ -11,10 +11,12 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 export class S3Service {
   private readonly s3Client: S3Client;
   private readonly bucket: string;
+  private readonly region: string;
 
   constructor(private readonly configService: ConfigService) {
+    this.region = this.configService.get<string>("s3.region")!;
     this.s3Client = new S3Client({
-      region: this.configService.get<string>("s3.region")!,
+      region: this.region,
       credentials: {
         accessKeyId: this.configService.get<string>("s3.accessKeyId")!,
         secretAccessKey: this.configService.get<string>("s3.secretAccessKey")!,
@@ -107,16 +109,32 @@ export class S3Service {
 
       console.log("Extracting key from URL:", urlOrKey);
       const urlObj = new URL(urlOrKey);
+      const host = urlObj.hostname.toLowerCase();
+      const path = urlObj.pathname;
+      const bucketName = this.bucket.toLowerCase();
+      const regionHostPrefix = `s3.${this.region.toLowerCase()}.amazonaws.com`;
 
-      // Handle common S3 URL formats, then decode to raw S3 key
-      let key = urlObj.pathname;
+      // Only treat URL as our S3 if the host matches our bucket (virtual-hosted)
+      // or is S3 path-style with our bucket as first path segment.
+      const isVirtualHosted = host.startsWith(`${bucketName}.s3.`);
+      const isAwsS3Host =
+        host === "s3.amazonaws.com" ||
+        host === regionHostPrefix ||
+        host.startsWith("s3.");
+      const isPathStyle = isAwsS3Host && path.startsWith(`/${bucketName}/`);
 
-      if (key.startsWith("/")) {
-        key = key.substring(1);
+      if (!isVirtualHosted && !isPathStyle) {
+        // External/non-bucket URL → do not attempt key extraction/signing
+        console.log(
+          "URL does not belong to configured S3 bucket; skipping key extraction"
+        );
+        return null;
       }
 
-      const bucketName = this.bucket;
-      if (key.startsWith(bucketName + "/")) {
+      // Handle common S3 URL formats, then decode to raw S3 key
+      let key = path;
+      if (key.startsWith("/")) key = key.substring(1);
+      if (isPathStyle && key.startsWith(bucketName + "/")) {
         key = key.substring(bucketName.length + 1);
       }
 

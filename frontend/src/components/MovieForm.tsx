@@ -19,6 +19,7 @@ const MovieForm: React.FC = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
+  const [posterChanged, setPosterChanged] = useState(false);
   // Remove theme state to avoid unused variable; inputs use Tailwind classes now
   const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ const MovieForm: React.FC = () => {
       setPublishDate(String(movie.publishDate || ""));
       setImageUrl(movie.imageUrl || "");
       setImagePreview(movie.imageUrl || "");
+      setPosterChanged(false);
     } catch (error) {
       console.error("Failed to load movie:", error);
       if (window.showToast) {
@@ -65,6 +67,7 @@ const MovieForm: React.FC = () => {
         const result = e.target?.result as string;
         setImagePreview(result);
         setImageUrl("");
+        setPosterChanged(true);
         // Validate the file immediately
         const fileError = validateMovieFieldOnBlur("imageFile", "", file);
         setErrors((prev) => ({ 
@@ -109,6 +112,7 @@ const MovieForm: React.FC = () => {
     if (url) {
       setImagePreview(url);
       setImageFile(null);
+      setPosterChanged(true);
       // Validate URL immediately
       const urlError = validateMovieFieldOnBlur("imageUrl", url);
       setErrors((prev) => ({ 
@@ -130,6 +134,7 @@ const MovieForm: React.FC = () => {
     setImageFile(null);
     setImageUrl("");
     setImagePreview("");
+    setPosterChanged(true);
     // Clear any image-related errors
     setErrors((prev) => {
       const newErrors = { ...prev };
@@ -209,13 +214,15 @@ const MovieForm: React.FC = () => {
         }
       };
 
-      // Normalize poster to a File when URL is provided
+      // Normalize poster only if user changed it
       let normalizedPoster: File | string | undefined;
-      if (imageUrl && !imageFile) {
-        const downloaded = await fetchImageAsFile(imageUrl);
-        normalizedPoster = downloaded || imageUrl; // fallback to URL if CORS blocks
-      } else if (imageFile) {
-        normalizedPoster = imageFile;
+      if (posterChanged) {
+        if (imageUrl && !imageFile) {
+          const downloaded = await fetchImageAsFile(imageUrl);
+          normalizedPoster = downloaded || imageUrl; // fallback to URL if CORS blocks
+        } else if (imageFile) {
+          normalizedPoster = imageFile;
+        }
       }
 
       if (isEditing && id) {
@@ -224,7 +231,7 @@ const MovieForm: React.FC = () => {
           publishingYear: publishDate,
         };
 
-        if (normalizedPoster) {
+        if (posterChanged && normalizedPoster) {
           updateData.poster = normalizedPoster as File | string;
         }
 

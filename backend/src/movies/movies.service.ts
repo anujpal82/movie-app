@@ -91,14 +91,11 @@ export class MoviesService {
     }
 
     // If poster changed and there was a previous one, delete old S3 object
-    if (
-      updateMovieDto.poster &&
-      existing.poster &&
-      updateMovieDto.poster !== existing.poster
-    ) {
+    if (updateMovieDto.poster && existing.poster) {
+      // Only delete if the underlying S3 keys differ (i.e., a new file was uploaded)
       const oldKey = this.s3Service.extractKeyFromUrl(existing.poster);
-      if (oldKey) {
-        // Fire and forget; you may await if you want strict consistency
+      const newKey = this.s3Service.extractKeyFromUrl(updateMovieDto.poster);
+      if (oldKey && newKey && oldKey !== newKey) {
         this.s3Service
           .deleteObject(oldKey)
           .catch(err =>
